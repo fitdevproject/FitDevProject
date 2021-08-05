@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import { TouchableOpacity } from "react-native";
 import { Alert, Modal, StyleSheet, Text, View, Button } from "react-native";
 import Task from "./Task";
@@ -11,6 +11,11 @@ const TaskList = ({
   disableIcon,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
+
+  const isEditDisabled = useMemo(() => {
+    let completedTasks = tasks.filter(task => task.complete);
+    return completedTasks.length === tasks.length;
+  }, [tasks]);
 
   return (
     <View style={styles.taskWrapper}>
@@ -25,6 +30,7 @@ const TaskList = ({
               onToggleComplete={onToggleComplete}
               onRemove={onRemove}
               tasks={tasks}
+              isEditDisabled={isEditDisabled}
             />
           ))}
         </View>
