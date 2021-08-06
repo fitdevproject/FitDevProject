@@ -1,25 +1,52 @@
 import React, { useState, useMemo } from "react";
+import { format, addDays } from "date-fns";
+import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native";
 import { Alert, Modal, StyleSheet, Text, View, Button } from "react-native";
 import Task from "./Task";
 
-const TaskList = ({
-  tasks,
-  onEdit,
-  onToggleComplete,
-  onRemove,
-  disableIcon,
-}) => {
+const TaskList = ({ tasks, onEdit, onToggleComplete, onRemove }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const [todaysDate, setTodaysDate] = useState(new Date());
 
   const isEditDisabled = useMemo(() => {
-    let completedTasks = tasks.filter(task => task.complete);
+    let completedTasks = tasks.filter((task) => task.complete);
     return completedTasks.length === tasks.length;
   }, [tasks]);
 
+  const addDay = () => {
+    let tempDate = new Date();
+    tempDate.setHours(0, 0, 0, 0);
+    if (todaysDate < tempDate) {
+      setTodaysDate(addDays(todaysDate, 1));
+    }
+  };
+
+  const subtractDay = () => {
+    setTodaysDate(addDays(todaysDate, -1));
+    console.log(todaysDate);
+  };
+
   return (
     <View style={styles.taskWrapper}>
-      <Text style={styles.sectionTitle}>Today's Critical Tasks</Text>
+      <Text style={styles.sectionTitle}>Critical Tasks</Text>
+      <View style={styles.dateView}>
+        <Icon
+          style={styles.closeIcon}
+          name="west"
+          size={30}
+          onPress={subtractDay}
+        />
+        <Text style={styles.dateInfo}>
+          {format(todaysDate, "cccc LLLL d, yyyy")}
+        </Text>
+        <Icon
+          iconStyle={styles.editIcon}
+          size={30}
+          name="east"
+          onPress={addDay}
+        />
+      </View>
       {tasks.length > 0 && (
         <View style={styles.items}>
           {tasks.map((task) => (
@@ -35,10 +62,12 @@ const TaskList = ({
           ))}
         </View>
       )}
-
       {tasks.length < 5 && (
         <View style={styles.btnWrapper}>
-          <Text>You can add up to {5 - tasks.length} more task(s).</Text>
+          <Text>
+            You can add up to {5 - tasks.length} more{" "}
+            {tasks.length === 4 ? "task" : "tasks"}.
+          </Text>
           <TouchableOpacity
             style={styles.addTaskBtn}
             onPress={() => setModalVisible(!modalVisible)}
@@ -81,10 +110,19 @@ const styles = StyleSheet.create({
     paddingTop: 80,
     paddingHorizontal: 20,
   },
+  dateView: {
+    marginTop: 20,
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
   sectionTitle: {
     textAlign: "center",
     fontSize: 24,
     fontWeight: "bold",
+  },
+  dateInfo: {
+    textAlign: "center",
+    fontSize: 18,
   },
   items: {
     marginTop: 30,

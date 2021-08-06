@@ -3,7 +3,7 @@ import { Icon } from "react-native-elements";
 import { View, Text, StyleSheet, TouchableOpacity, Alert } from "react-native";
 import { CheckBox } from "react-native-elements/dist/checkbox/CheckBox";
 
-const Task = ({ task, onEdit, onToggleComplete, onRemove, tasks, isEditDisabled }) => {
+const Task = ({ task, onEdit, onToggleComplete, onRemove, isEditDisabled }) => {
   const showDeleteAlert = () =>
     Alert.alert("Delete Task", "Are you sure?", [
       {
@@ -14,18 +14,13 @@ const Task = ({ task, onEdit, onToggleComplete, onRemove, tasks, isEditDisabled 
       { text: "Yes", onPress: () => onRemove(task.id) },
     ]);
 
-  const onCompletedCheck = () => {
-    onToggleComplete(task.id);
-  };
-
-
   return (
     <View style={styles.item}>
       <View style={styles.itemLeft}>
         <CheckBox
           checkedColor="#7ed957"
           checked={task.complete}
-          onPress={onCompletedCheck}
+          onPress={() => onToggleComplete(task.id)}
           style={styles.square}
         ></CheckBox>
         {task.complete ? (

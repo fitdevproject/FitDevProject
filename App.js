@@ -5,7 +5,6 @@ import AddTask from "./components/AddTask";
 import TaskList from "./components/TaskList";
 
 export default function App() {
-  const [disabled, setDisabled] = useState(false);
   const [tasks, setTasks] = useState([
     {
       id: 1,
