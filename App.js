@@ -1,7 +1,6 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
-import AddTask from "./components/AddTask";
 import TaskList from "./components/TaskList";
 
 export default function App() {
@@ -45,16 +44,27 @@ export default function App() {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const handleAddTask = () => {
-    setTasks(...tasks, task);
+  const editTask = (id, updatedTask) => {
+    setTasks(
+      tasks.map((task) =>
+        task.id === id ? { ...task, text: updatedTask.text } : task
+      )
+    );
+  };
+
+  const handleAddTask = (task) => {
+    task.id = Math.floor(Math.random() * 10000) + 1;
+    setTasks([...tasks, task]);
   };
 
   return (
     <View style={styles.container}>
       <TaskList
         tasks={tasks}
+        editTask={editTask}
         onToggleComplete={toggleComplete}
         onRemove={removeTaskById}
+        handleAddTask={handleAddTask}
       />
     </View>
   );

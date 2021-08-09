@@ -4,9 +4,15 @@ import { Icon } from "react-native-elements";
 import { TouchableOpacity } from "react-native";
 import { Alert, Modal, StyleSheet, Text, View, Button } from "react-native";
 import Task from "./Task";
+import AddTaskModal from "./AddTaskModal";
 
-const TaskList = ({ tasks, onEdit, onToggleComplete, onRemove }) => {
-  const [modalVisible, setModalVisible] = useState(false);
+const TaskList = ({
+  tasks,
+  editTask,
+  onToggleComplete,
+  onRemove,
+  handleAddTask,
+}) => {
   const [todaysDate, setTodaysDate] = useState(new Date());
 
   const isEditDisabled = useMemo(() => {
@@ -14,7 +20,7 @@ const TaskList = ({ tasks, onEdit, onToggleComplete, onRemove }) => {
     return completedTasks.length === tasks.length;
   }, [tasks]);
 
-  const addDay = () => {
+  const onRightArrowClick = () => {
     let tempDate = new Date();
     tempDate.setHours(0, 0, 0, 0);
     if (todaysDate < tempDate) {
@@ -22,9 +28,8 @@ const TaskList = ({ tasks, onEdit, onToggleComplete, onRemove }) => {
     }
   };
 
-  const subtractDay = () => {
+  const onLeftArrowClick = () => {
     setTodaysDate(addDays(todaysDate, -1));
-    console.log(todaysDate);
   };
 
   return (
@@ -35,7 +40,7 @@ const TaskList = ({ tasks, onEdit, onToggleComplete, onRemove }) => {
           style={styles.closeIcon}
           name="west"
           size={30}
-          onPress={subtractDay}
+          onPress={onLeftArrowClick}
         />
         <Text style={styles.dateInfo}>
           {format(todaysDate, "cccc LLLL d, yyyy")}
@@ -44,7 +49,7 @@ const TaskList = ({ tasks, onEdit, onToggleComplete, onRemove }) => {
           iconStyle={styles.editIcon}
           size={30}
           name="east"
-          onPress={addDay}
+          onPress={onRightArrowClick}
         />
       </View>
       {tasks.length > 0 && (
@@ -53,7 +58,7 @@ const TaskList = ({ tasks, onEdit, onToggleComplete, onRemove }) => {
             <Task
               key={task.id}
               task={task}
-              onEdit={onEdit}
+              editTask={editTask}
               onToggleComplete={onToggleComplete}
               onRemove={onRemove}
               tasks={tasks}
@@ -68,39 +73,9 @@ const TaskList = ({ tasks, onEdit, onToggleComplete, onRemove }) => {
             You can add up to {5 - tasks.length} more{" "}
             {tasks.length === 4 ? "task" : "tasks"}.
           </Text>
-          <TouchableOpacity
-            style={styles.addTaskBtn}
-            onPress={() => setModalVisible(!modalVisible)}
-          >
-            <Text styles={styles.addTaskBtnText}>Add Task</Text>
-          </TouchableOpacity>
+          <AddTaskModal handleAddTask={handleAddTask} />
         </View>
       )}
-      <Modal
-        animationType="slide"
-        transparent={false}
-        visible={modalVisible}
-        onRequestClose={() => {
-          setModalVisible(!modalVisible);
-        }}
-      >
-        <View style={styles.modalWrapper}>
-          <View style={styles.modalFormContent}>
-            <Text>Hello from modal</Text>
-          </View>
-          <View style={styles.modalBtnWrapper}>
-            <TouchableOpacity style={styles.addTaskModalBtn}>
-              <Text styles={styles.addTaskBtnText}>Save</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={styles.cancelModalBtn}
-              onPress={() => setModalVisible(!modalVisible)}
-            >
-              <Text styles={styles.addTaskBtnText}>Cancel</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 };
@@ -133,49 +108,9 @@ const styles = StyleSheet.create({
     marginTop: 20,
     justifyContent: "space-between",
   },
-  addTaskBtn: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
-    width: 150,
-    height: 60,
-    borderRadius: 50,
-    borderColor: "#545454",
-    borderWidth: 1,
-  },
   noTasksView: {
     marginTop: 20,
     alignItems: "center",
-  },
-  modalWrapper: {
-    flex: 1,
-    flexDirection: "column",
-    justifyContent: "space-evenly",
-  },
-  modalBtnWrapper: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
-  },
-  addTaskModalBtn: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
-    width: 150,
-    height: 60,
-    borderRadius: 50,
-    borderColor: "#545454",
-    borderWidth: 1,
-  },
-  cancelModalBtn: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
-    width: 150,
-    height: 60,
-    borderRadius: 50,
-    borderColor: "#545454",
-    borderWidth: 1,
   },
 });
 
