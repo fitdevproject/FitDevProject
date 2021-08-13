@@ -7,30 +7,21 @@ import Task from "./Task";
 import AddTaskModal from "./AddTaskModal";
 
 const TaskList = ({
-  tasks,
+  currentDay,
+  currentDayTasks,
   editTask,
   onToggleComplete,
   onRemove,
   handleAddTask,
+  onRightArrowClick,
+  onLeftArrowClick,
 }) => {
   const [todaysDate, setTodaysDate] = useState(new Date());
 
   const isEditDisabled = useMemo(() => {
-    let completedTasks = tasks.filter((task) => task.complete);
-    return completedTasks.length === tasks.length;
-  }, [tasks]);
-
-  const onRightArrowClick = () => {
-    let tempDate = new Date();
-    tempDate.setHours(0, 0, 0, 0);
-    if (todaysDate < tempDate) {
-      setTodaysDate(addDays(todaysDate, 1));
-    }
-  };
-
-  const onLeftArrowClick = () => {
-    setTodaysDate(addDays(todaysDate, -1));
-  };
+    let completedTasks = currentDayTasks.filter((task) => task.complete);
+    return completedTasks.length === currentDayTasks.length;
+  }, [currentDayTasks]);
 
   return (
     <View style={styles.taskWrapper}>
@@ -43,7 +34,7 @@ const TaskList = ({
           onPress={onLeftArrowClick}
         />
         <Text style={styles.dateInfo}>
-          {format(todaysDate, "cccc LLLL d, yyyy")}
+          {format(currentDay.date, "cccc LLLL d, yyyy")}
         </Text>
         <Icon
           iconStyle={styles.editIcon}
@@ -52,26 +43,25 @@ const TaskList = ({
           onPress={onRightArrowClick}
         />
       </View>
-      {tasks.length > 0 && (
+      {currentDayTasks.length > 0 && (
         <View style={styles.items}>
-          {tasks.map((task) => (
+          {currentDayTasks.map((task) => (
             <Task
               key={task.id}
               task={task}
               editTask={editTask}
               onToggleComplete={onToggleComplete}
               onRemove={onRemove}
-              tasks={tasks}
               isEditDisabled={isEditDisabled}
             />
           ))}
         </View>
       )}
-      {tasks.length < 5 && (
+      {currentDayTasks.length < 5 && (
         <View style={styles.btnWrapper}>
           <Text>
-            You can add up to {5 - tasks.length} more{" "}
-            {tasks.length === 4 ? "task" : "tasks"}.
+            You can add up to {5 - currentDayTasks.length} more{" "}
+            {currentDayTasks.length === 4 ? "task" : "tasks"}.
           </Text>
           <AddTaskModal handleAddTask={handleAddTask} />
         </View>

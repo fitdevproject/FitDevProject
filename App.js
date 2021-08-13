@@ -4,12 +4,14 @@ import { format, addDays } from "date-fns";
 import { StyleSheet, Text, View } from "react-native";
 import TaskList from "./components/TaskList";
 import { add } from "date-fns/esm";
+import FitDevDay from "./components/FitDevDay";
 
 export default function App() {
+  const [currentDate, setCurrentDate] = useState(new Date());
   const [fitDevDays, setFitDevDays] = useState([
     {
       id: 1,
-      date: addDays(new Date(), -1),
+      date: addDays(currentDate, -1),
       dayComplete: false,
       tasks: [
         {
@@ -41,7 +43,7 @@ export default function App() {
     },
     {
       id: 2,
-      date: new Date(),
+      date: currentDate,
       dayComplete: false,
       tasks: [
         {
@@ -73,7 +75,7 @@ export default function App() {
     },
     {
       id: 3,
-      date: addDays(new Date(), 1),
+      date: addDays(currentDate, 1),
       dayComplete: false,
       tasks: [
         {
@@ -104,50 +106,26 @@ export default function App() {
       ],
     },
   ]);
+  const [currentIndex, setCurrentIndex] = useState(1);
+  const [currentDay, setCurrentDay] = useState(fitDevDays[currentIndex]);
 
-  const [tasks, setTasks] = useState([
-    {
-      id: 1,
-      text: "Stick to my diet",
-      complete: true,
-    },
-    {
-      id: 2,
-      text: "Work on app",
-      complete: true,
-    },
-    {
-      id: 3,
-      text: "Get a lift in",
-      complete: true,
-    },
-    {
-      id: 4,
-      text: "Read 10 pages",
-      complete: false,
-    },
-    {
-      id: 5,
-      text: "Drink 2 big glasses of water",
-      complete: true,
-    },
-  ]);
+  const [currentDayTasks, setCurrentDayTasks] = useState([currentDay.tasks]);
 
   const toggleComplete = (id) => {
-    setTasks(
-      tasks.map((task) =>
+    setCurrentDayTasks(
+      currentDayTasks.map((task) =>
         task.id === id ? { ...task, complete: !task.complete } : task
       )
     );
   };
 
   const removeTaskById = (id) => {
-    setTasks(tasks.filter((task) => task.id !== id));
+    setCurrentDayTasks(currentDayTasks.filter((task) => task.id !== id));
   };
 
   const editTask = (updatedTask, id) => {
-    setTasks(
-      tasks.map((task) =>
+    setCurrentDayTasks(
+      currentDayTasks.map((task) =>
         task.id === id
           ? { ...task, text: updatedTask.text, complete: false }
           : task
@@ -157,17 +135,102 @@ export default function App() {
 
   const handleAddTask = (task) => {
     task.id = Math.floor(Math.random() * 10000) + 1;
-    setTasks([...tasks, task]);
+    setCurrentDayTasks([...currentDayTasks, task]);
+  };
+
+  const onRightArrowClick = () => {
+    setCurrentIndex(currentIndex + 1);
+    if (!!fitDevDays[currentIndex]) {
+      let fitDevDay = {
+        id: currentIndex,
+        date: addDays(currentDate, 1),
+        dayComplete: false,
+        tasks: [
+          {
+            id: 1,
+            text: "Create twitter content",
+            complete: true,
+          },
+          {
+            id: 2,
+            text: "Work on FitDevDay Switcher",
+            complete: true,
+          },
+          {
+            id: 3,
+            text: "Mobility work",
+            complete: true,
+          },
+          {
+            id: 4,
+            text: "Read 10 pages",
+            complete: false,
+          },
+          {
+            id: 5,
+            text: "Drink 2 big glasses of water",
+            complete: true,
+          },
+        ],
+      };
+      setFitDevDays({ ...fitDevDays, fitDevDay });
+    }
+    setCurrentDay(fitDevDays[currentIndex]);
+    setCurrentDayTasks(currentDay.tasks);
+  };
+
+  const onLeftArrowClick = () => {
+    setCurrentIndex(currentIndex - 1);
+    if (!!fitDevDays[currentIndex]) {
+      let fitDevDay = {
+        id: currentIndex,
+        date: addDays(currentDate, 1),
+        dayComplete: false,
+        tasks: [
+          {
+            id: 1,
+            text: "Create twitter content",
+            complete: true,
+          },
+          {
+            id: 2,
+            text: "Work on FitDevDay Switcher",
+            complete: true,
+          },
+          {
+            id: 3,
+            text: "Mobility work",
+            complete: true,
+          },
+          {
+            id: 4,
+            text: "Read 10 pages",
+            complete: false,
+          },
+          {
+            id: 5,
+            text: "Drink 2 big glasses of water",
+            complete: true,
+          },
+        ],
+      };
+      setFitDevDays({ ...fitDevDays, fitDevDay });
+    }
+    setCurrentDay(fitDevDays[currentIndex]);
+    setCurrentDayTasks(currentDay.tasks);
   };
 
   return (
     <View style={styles.container}>
-      <TaskList
-        tasks={tasks}
+      <FitDevDay
+        currentDayTasks={currentDayTasks}
+        currentDay={currentDay}
         editTask={editTask}
         onToggleComplete={toggleComplete}
         onRemove={removeTaskById}
         handleAddTask={handleAddTask}
+        onRightArrowClick={onRightArrowClick}
+        onLeftArrowClick={onLeftArrowClick}
       />
     </View>
   );
