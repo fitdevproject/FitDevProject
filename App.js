@@ -1,9 +1,110 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState } from "react";
+import { format, addDays } from "date-fns";
 import { StyleSheet, Text, View } from "react-native";
 import TaskList from "./components/TaskList";
+import { add } from "date-fns/esm";
 
 export default function App() {
+  const [fitDevDays, setFitDevDays] = useState([
+    {
+      id: 1,
+      date: addDays(new Date(), -1),
+      dayComplete: false,
+      tasks: [
+        {
+          id: 1,
+          text: "Stick to my diet",
+          complete: true,
+        },
+        {
+          id: 2,
+          text: "Work on app",
+          complete: true,
+        },
+        {
+          id: 3,
+          text: "Get a lift in",
+          complete: true,
+        },
+        {
+          id: 4,
+          text: "Read 10 pages",
+          complete: false,
+        },
+        {
+          id: 5,
+          text: "Drink 2 big glasses of water",
+          complete: true,
+        },
+      ],
+    },
+    {
+      id: 2,
+      date: new Date(),
+      dayComplete: false,
+      tasks: [
+        {
+          id: 1,
+          text: "Create twitter content",
+          complete: true,
+        },
+        {
+          id: 2,
+          text: "Work on FitDevDay Switcher",
+          complete: true,
+        },
+        {
+          id: 3,
+          text: "Mobility work",
+          complete: true,
+        },
+        {
+          id: 4,
+          text: "Read 10 pages",
+          complete: false,
+        },
+        {
+          id: 5,
+          text: "Drink 2 big glasses of water",
+          complete: true,
+        },
+      ],
+    },
+    {
+      id: 3,
+      date: addDays(new Date(), 1),
+      dayComplete: false,
+      tasks: [
+        {
+          id: 1,
+          text: "Get a workout in",
+          complete: true,
+        },
+        {
+          id: 2,
+          text: "Work on tab navigation for the app",
+          complete: true,
+        },
+        {
+          id: 3,
+          text: "Create twitter content",
+          complete: true,
+        },
+        {
+          id: 4,
+          text: "Read 10 pages",
+          complete: false,
+        },
+        {
+          id: 5,
+          text: "Drink 60oz of water",
+          complete: true,
+        },
+      ],
+    },
+  ]);
+
   const [tasks, setTasks] = useState([
     {
       id: 1,
@@ -44,10 +145,12 @@ export default function App() {
     setTasks(tasks.filter((task) => task.id !== id));
   };
 
-  const editTask = (id, updatedTask) => {
+  const editTask = (updatedTask, id) => {
     setTasks(
       tasks.map((task) =>
-        task.id === id ? { ...task, text: updatedTask.text } : task
+        task.id === id
+          ? { ...task, text: updatedTask.text, complete: false }
+          : task
       )
     );
   };
@@ -73,7 +176,7 @@ export default function App() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#ffffff",
+    backgroundColor: "#F8F8F8",
   },
 
   taskWrapper: {

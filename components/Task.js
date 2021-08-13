@@ -1,5 +1,5 @@
-import React, { useState } from "react";
-import { Icon } from "react-native-elements";
+import React, { useState, useRef } from "react";
+import { Icon, Button } from "react-native-elements";
 import {
   View,
   Text,
@@ -20,11 +20,11 @@ const Task = ({
   isEditDisabled,
 }) => {
   const [modalVisible, setModalVisible] = useState(false);
+  const inputRef = useRef();
   const showDeleteAlert = () =>
     Alert.alert("Delete Task", "Are you sure?", [
       {
         text: "No",
-        onPress: () => console.log("Cancel Pressed"),
         style: "cancel",
       },
       { text: "Yes", onPress: () => onRemove(task.id) },
@@ -64,6 +64,11 @@ const Task = ({
       )}
       <View>
         <Modal
+          onShow={() => {
+            setTimeout(() => {
+              inputRef.current.focus();
+            }, 1);
+          }}
           animationType="slide"
           transparent={false}
           visible={modalVisible}
@@ -75,31 +80,37 @@ const Task = ({
             <Formik
               initialValues={{ text: task.text }}
               onSubmit={(values) => {
-                editTask(task.id, values);
+                editTask(values, task.id);
+                setModalVisible(!modalVisible);
               }}
             >
               {(formikProps) => (
                 <View style={styles.formikViewWrapper}>
                   <TextInput
+                    ref={inputRef}
                     style={styles.input}
-                    placeholder="Update Task"
-                    autoFocus={true}
                     onChangeText={formikProps.handleChange("text")}
                     value={formikProps.values.text}
                   />
                   <View style={styles.modalBtnWrapper}>
-                    <TouchableOpacity
-                      style={styles.cancelModalBtn}
+                    <Button
+                      title=" Cancel"
+                      titleStyle={styles.cancelModalBtnTitle}
+                      buttonStyle={styles.cancelModalBtn}
+                      containerStyle={styles.cancelModalBtnContainer}
                       onPress={() => setModalVisible(!modalVisible)}
-                    >
-                      <Text styles={styles.addTaskBtnText}>Cancel</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity
-                      style={styles.addTaskModalBtn}
+                      icon={
+                        <Icon name="close" size={22} color="rgba(0,0,0,0.5)" />
+                      }
+                    ></Button>
+                    <Button
+                      raised={true}
+                      title=" Update"
+                      buttonStyle={styles.updateTaskModalBtn}
+                      containerStyle={styles.updateTaskModalBtnContainer}
                       onPress={formikProps.handleSubmit}
-                    >
-                      <Text styles={styles.addTaskBtnText}>Update</Text>
-                    </TouchableOpacity>
+                      icon={<Icon name="add" size={24} color="white" />}
+                    ></Button>
                   </View>
                 </View>
               )}
@@ -122,6 +133,11 @@ const styles = StyleSheet.create({
     borderColor: "#545454",
     borderWidth: 2,
     borderRadius: 5,
+    shadowColor: "rgba(0,0,0, .4)",
+    shadowOffset: { height: 1, width: 1 },
+    shadowOpacity: 1,
+    shadowRadius: 1,
+    elevation: 2,
   },
   completedTask: {
     textDecorationLine: "line-through",
@@ -157,18 +173,8 @@ const styles = StyleSheet.create({
     borderColor: "#545454",
     padding: 10,
     fontSize: 18,
-    borderRadius: 6,
+    borderRadius: 5,
     alignSelf: "center",
-  },
-  addTaskBtn: {
-    justifyContent: "center",
-    alignItems: "center",
-    marginTop: 10,
-    width: 150,
-    height: 60,
-    borderRadius: 50,
-    borderColor: "#545454",
-    borderWidth: 1,
   },
   modalWrapper: {
     flex: 1,
@@ -181,25 +187,28 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
     marginTop: 20,
   },
-  addTaskModalBtn: {
-    justifyContent: "center",
-    alignItems: "center",
+  updateTaskModalBtn: {
+    height: 50,
+    backgroundColor: "green",
+  },
+  updateTaskModalBtnContainer: {
     marginTop: 10,
-    width: 100,
-    height: 40,
-    borderRadius: 50,
-    borderColor: "#545454",
-    borderWidth: 1,
+    width: 130,
+    borderRadius: 25,
   },
   cancelModalBtn: {
-    justifyContent: "center",
-    alignItems: "center",
+    height: 50,
+    backgroundColor: "white",
+    borderRadius: 25,
+    borderWidth: 0.75,
+    borderColor: "rgba(0,0,0,0.5)",
+  },
+  cancelModalBtnContainer: {
     marginTop: 10,
-    width: 100,
-    height: 40,
-    borderRadius: 50,
-    borderColor: "#545454",
-    borderWidth: 1,
+    width: 130,
+  },
+  cancelModalBtnTitle: {
+    color: "rgba(0,0,0,0.5)",
   },
 });
 
