@@ -1,14 +1,6 @@
 import React, { useState, useRef } from "react";
 import { Icon, Button } from "react-native-elements";
-import {
-  View,
-  Text,
-  StyleSheet,
-  TouchableOpacity,
-  Alert,
-  Modal,
-  TextInput,
-} from "react-native";
+import { View, Text, StyleSheet, Alert, Modal, TextInput } from "react-native";
 import { CheckBox } from "react-native-elements/dist/checkbox/CheckBox";
 import { Formik } from "formik";
 
@@ -163,6 +155,7 @@ const styles = StyleSheet.create({
   itemText: {
     width: "80%",
     color: "rgba(0,0,0,1)",
+    flexWrap: "wrap",
   },
   editIcon: {
     marginLeft: 15,

@@ -1,8 +1,10 @@
 import React, { useState, useMemo } from "react";
+import { FlatList } from "react-native";
 import { View } from "react-native";
 import TaskList from "./TaskList";
 
 const FitDevDay = ({
+  currentIndex,
   currentDay,
   currentDayTasks,
   editTask,
@@ -15,6 +17,7 @@ const FitDevDay = ({
   return (
     <View>
       <TaskList
+        currentIndex={currentIndex}
         currentDayTasks={currentDayTasks}
         currentDay={currentDay}
         editTask={editTask}

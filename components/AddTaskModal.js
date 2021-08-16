@@ -1,12 +1,5 @@
 import React, { useState, useRef } from "react";
-import {
-  StyleSheet,
-  TextInput,
-  View,
-  Text,
-  TouchableOpacity,
-  Modal,
-} from "react-native";
+import { StyleSheet, TextInput, View, Modal } from "react-native";
 import { Icon, Button } from "react-native-elements";
 import { Formik } from "formik";
 
