@@ -1,19 +1,44 @@
 import React, { useState } from "react";
 import { addDays } from "date-fns";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import TaskList from "../components/TaskList";
 import { FlatList, Dimensions } from "react-native";
 import TaskNavigator from "../components/TaskNavigator";
-import { SafeAreaView } from "react-native";
+import { ScrollView } from "react-native";
 
-const { width, height } = Dimensions.get("screen");
-const ITEM_WIDTH = width;
-const ITEM_HEIGHT = height * 0.75;
+const width = Dimensions.get("window").width;
 
 const Home = () => {
   const [fitDevDays, setFitDevDays] = useState([
     {
       id: 1,
+      date: addDays(new Date(), -1),
+      dayComplete: false,
+      tasks: [
+        {
+          id: Math.floor(Math.random() * 10000) + 1,
+          text: "Create twitter content",
+          complete: true,
+        },
+        {
+          id: Math.floor(Math.random() * 10000) + 1,
+          text: "Work on FitDevDay Switcher",
+          complete: true,
+        },
+        {
+          id: Math.floor(Math.random() * 10000) + 1,
+          text: "Mobility work",
+          complete: true,
+        },
+        {
+          id: Math.floor(Math.random() * 10000) + 1,
+          text: "Read 10 pages",
+          complete: false,
+        },
+      ],
+    },
+    {
+      id: 2,
       date: new Date(),
       dayComplete: false,
       tasks: [
@@ -40,7 +65,7 @@ const Home = () => {
       ],
     },
     {
-      id: 2,
+      id: 3,
       date: addDays(new Date(), 1),
       dayComplete: false,
       tasks: [
@@ -67,7 +92,7 @@ const Home = () => {
       ],
     },
     {
-      id: 3,
+      id: 4,
       date: addDays(new Date(), 2),
       dayComplete: false,
       tasks: [
@@ -94,147 +119,95 @@ const Home = () => {
       ],
     },
   ]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-  const [currentDay, setCurrentDay] = useState(fitDevDays[currentIndex]);
 
-  const [currentDayTasks, setCurrentDayTasks] = useState(currentDay.tasks);
+  // const onRightArrowClick = () => {
+  //   setCurrentIndex(currentIndex + 1);
+  //   console.warn(currentIndex);
+  //   setCurrentDay(fitDevDays[currentIndex]);
+  //   setCurrentDayTasks(fitDevDays[currentIndex].tasks);
+  //   if (currentIndex === fitDevDays.length - 1) {
+  //     const fitDevDay = {
+  //       id: Math.floor(Math.random() * 10000) + 1,
+  //       date: addDays(currentDay.date, 1),
+  //       dayComplete: false,
+  //       tasks: [
+  //         {
+  //           id: Math.floor(Math.random() * 10000) + 1,
+  //           text: "Create twitter content",
+  //           complete: true,
+  //         },
+  //         {
+  //           id: Math.floor(Math.random() * 10000) + 1,
+  //           text: "Work on FitDevDay Switcher",
+  //           complete: true,
+  //         },
+  //         {
+  //           id: Math.floor(Math.random() * 10000) + 1,
+  //           text: "Mobility work",
+  //           complete: true,
+  //         },
+  //         {
+  //           id: Math.floor(Math.random() * 10000) + 1,
+  //           text: "Read 10 pages",
+  //           complete: false,
+  //         },
+  //         {
+  //           id: Math.floor(Math.random() * 10000) + 1,
+  //           text: "Drink 2 big glasses of water",
+  //           complete: true,
+  //         },
+  //       ],
+  //     };
+  //     setFitDevDays([...fitDevDays, fitDevDay]);
+  //   }
+  // };
 
-  const toggleComplete = (id) => {
-    setCurrentDayTasks(
-      currentDayTasks.map((task) =>
-        task.id === id ? { ...task, complete: !task.complete } : task
-      )
-    );
-  };
-
-  const removeTaskById = (id) => {
-    setCurrentDayTasks(currentDayTasks.filter((task) => task.id !== id));
-  };
-
-  const editTask = (updatedTask, id) => {
-    setCurrentDayTasks(
-      currentDayTasks.map((task) =>
-        task.id === id
-          ? { ...task, text: updatedTask.text, complete: false }
-          : task
-      )
-    );
-  };
-
-  const handleAddTask = (task) => {
-    task.id = Math.floor(Math.random() * 10000) + 1;
-    setCurrentDayTasks([...currentDayTasks, task]);
-  };
-
-  const onRightArrowClick = () => {
-    setCurrentIndex(currentIndex + 1);
-    console.warn(currentIndex);
-    setCurrentDay(fitDevDays[currentIndex]);
-    setCurrentDayTasks(fitDevDays[currentIndex].tasks);
-    if (currentIndex === fitDevDays.length - 1) {
-      const fitDevDay = {
-        id: Math.floor(Math.random() * 10000) + 1,
-        date: addDays(currentDay.date, 1),
-        dayComplete: false,
-        tasks: [
-          {
-            id: Math.floor(Math.random() * 10000) + 1,
-            text: "Create twitter content",
-            complete: true,
-          },
-          {
-            id: Math.floor(Math.random() * 10000) + 1,
-            text: "Work on FitDevDay Switcher",
-            complete: true,
-          },
-          {
-            id: Math.floor(Math.random() * 10000) + 1,
-            text: "Mobility work",
-            complete: true,
-          },
-          {
-            id: Math.floor(Math.random() * 10000) + 1,
-            text: "Read 10 pages",
-            complete: false,
-          },
-          {
-            id: Math.floor(Math.random() * 10000) + 1,
-            text: "Drink 2 big glasses of water",
-            complete: true,
-          },
-        ],
-      };
-      setFitDevDays([...fitDevDays, fitDevDay]);
-    }
-  };
-
-  const onLeftArrowClick = () => {
-    setCurrentIndex(currentIndex - 1);
-    console.warn(currentIndex);
-    setCurrentDay(fitDevDays[currentIndex]);
-    setCurrentDayTasks(fitDevDays[currentIndex].tasks);
-  };
+  // const onLeftArrowClick = () => {
+  //   setCurrentIndex(currentIndex - 1);
+  //   console.warn(currentIndex);
+  //   setCurrentDay(fitDevDays[currentIndex]);
+  //   setCurrentDayTasks(fitDevDays[currentIndex].tasks);
+  // };
 
   return (
-    <View>
-      {/* <FitDevDay
-        currentIndex={currentIndex}
-        currentDay={currentDay}
-        currentDayTasks={currentDayTasks}
-        editTask={editTask}
-        onToggleComplete={toggleComplete}
-        onRemove={removeTaskById}
-        handleAddTask={handleAddTask}
-        onRightArrowClick={onRightArrowClick}
-        onLeftArrowClick={onLeftArrowClick}
-      /> */}
-      <Text style={styles.sectionTitle}>Critical Tasks</Text>
-
-      <FlatList
-        data={fitDevDays}
-        pagingEnabled
-        horizontal
-        showsHorizontalScrollIndicator={false}
-        renderItem={({ item }) => {
-          return (
-            <View style={styles.taskListWrapper}>
-              <View style={styles.dateView}>
-                <TaskNavigator
-                  onLeftArrowClick={onLeftArrowClick}
-                  currentIndex={currentIndex}
-                  onRightArrowClick={onRightArrowClick}
-                  currentDay={currentDay}
-                />
+    <ScrollView>
+      <View style={styles.homeView}>
+        <FlatList
+          data={fitDevDays}
+          pagingEnabled
+          horizontal
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => {
+            return (
+              <View style={styles.taskListWrapper}>
+                <View style={styles.dateView}>
+                  <TaskNavigator
+                    // onLeftArrowClick={onLeftArrowClick}
+                    // onRightArrowClick={onRightArrowClick}
+                    currentDay={item}
+                  />
+                </View>
+                <TaskList currentDayTasks={item.tasks} />
               </View>
-              <TaskList
-                currentDayTasks={item.tasks}
-                editTask={editTask}
-                onToggleComplete={toggleComplete}
-                onRemove={removeTaskById}
-                handleAddTask={handleAddTask}
-              />
-            </View>
-          );
-        }}
-        keyExtractor={(_, index) => index.toString()}
-      />
-    </View>
+            );
+          }}
+          keyExtractor={(_, index) => index.toString()}
+        />
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
+  homeView: {
+    marginTop: 10,
+  },
   taskListWrapper: {
     width,
     resizeMode: "cover",
   },
   dateView: {
     alignItems: "center",
-  },
-  sectionTitle: {
-    textAlign: "center",
-    fontSize: 24,
-    fontWeight: "bold",
-    paddingTop: 80,
   },
 });
 

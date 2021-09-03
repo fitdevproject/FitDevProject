@@ -26,7 +26,7 @@ const Task = ({
     <View style={styles.item}>
       <View style={styles.itemLeft}>
         <CheckBox
-          checkedColor="#7ed957"
+          checkedColor="green"
           checked={task.complete}
           onPress={() => onToggleComplete(task.id)}
           style={styles.square}
@@ -134,7 +134,9 @@ const styles = StyleSheet.create({
   completedTask: {
     textDecorationLine: "line-through",
     color: "rgba(0,0,0,0.3)",
-    width: "80%",
+    width: "75%",
+    fontSize: 16,
+    flexWrap: "wrap",
   },
   itemLeft: {
     flex: 1,
@@ -156,6 +158,7 @@ const styles = StyleSheet.create({
     width: "80%",
     color: "rgba(0,0,0,1)",
     flexWrap: "wrap",
+    fontSize: 16,
   },
   editIcon: {
     marginLeft: 15,

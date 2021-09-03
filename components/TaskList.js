@@ -1,19 +1,41 @@
-import React, { useMemo } from "react";
+import React, { useMemo, useState } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import Task from "./Task";
 import AddTaskModal from "./AddTaskModal";
 
-const TaskList = ({
-  currentDayTasks,
-  editTask,
-  onToggleComplete,
-  onRemove,
-  handleAddTask,
-}) => {
+const TaskList = (props) => {
+  const [currentDayTasks, setCurrentDayTasks] = useState(props.currentDayTasks);
   const isEditDisabled = useMemo(() => {
     let completedTasks = currentDayTasks.filter((task) => task.complete);
     return completedTasks.length === currentDayTasks.length;
   }, [currentDayTasks]);
+
+  const toggleComplete = (id) => {
+    setCurrentDayTasks(
+      currentDayTasks.map((task) =>
+        task.id === id ? { ...task, complete: !task.complete } : task
+      )
+    );
+  };
+
+  const removeTaskById = (id) => {
+    setCurrentDayTasks(currentDayTasks.filter((task) => task.id !== id));
+  };
+
+  const editTask = (updatedTask, id) => {
+    setCurrentDayTasks(
+      currentDayTasks.map((task) =>
+        task.id === id
+          ? { ...task, text: updatedTask.text, complete: false }
+          : task
+      )
+    );
+  };
+
+  const handleAddTask = (task) => {
+    task.id = Math.floor(Math.random() * 10000) + 1;
+    setCurrentDayTasks([...currentDayTasks, task]);
+  };
 
   return (
     <View style={styles.taskWrapper}>
@@ -24,8 +46,8 @@ const TaskList = ({
               key={task.id}
               task={task}
               editTask={editTask}
-              onToggleComplete={onToggleComplete}
-              onRemove={onRemove}
+              onToggleComplete={toggleComplete}
+              onRemove={removeTaskById}
               isEditDisabled={isEditDisabled}
             />
           ))}
