@@ -31,9 +31,10 @@ const activities = [
   },
 ];
 
-const ActivityLevel = ({ navigation }) => {
-  const [activitySelected, setActivitySelected] = useState(null);
-  const [activity, setActivity] = useState(null);
+const ActivityLevel = ({ route, navigation }) => {
+  const [activitySelected, setActivitySelected] = useState(1);
+  const [activity, setActivity] = useState(activities[0]);
+  const { goal } = route.params;
 
   const handleActivityPress = (id) => {
     setActivitySelected(id);
@@ -88,7 +89,12 @@ const ActivityLevel = ({ navigation }) => {
         raised={true}
         buttonStyle={styles.nextBtn}
         containerStyle={styles.nextBtnContainer}
-        onPress={() => navigation.navigate("Goal Information")}
+        onPress={() =>
+          navigation.navigate("Goal Information", {
+            goal: goal,
+            activity: activity,
+          })
+        }
       ></Button>
     </View>
   );

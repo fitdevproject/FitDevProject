@@ -21,15 +21,17 @@ const genders = [
   },
 ];
 
-const GoalInformation = () => {
+const GoalInformation = ({ route, navigation }) => {
   const [goalWeight, setGoalWeight] = useState(0);
-  const [currentWeight, setCurrentWeight] = useState(0);
-  const [gender, setGender] = useState(null);
-  const [genderSelected, setGenderSelected] = useState(null);
+  const [currentWeight, setCurrentWeight] = useState();
+  const [gender, setGender] = useState(genders[0]);
+  const [genderSelected, setGenderSelected] = useState(1);
+  const { goal, activity } = route.params;
 
   const handleGenderPress = (id) => {
     setGenderSelected(id);
   };
+
   return (
     <View style={{ marginTop: 30, padding: 15 }}>
       <Text style={{ fontSize: 22, fontWeight: "bold", marginBottom: 30 }}>
@@ -65,6 +67,7 @@ const GoalInformation = () => {
         }}
         keyExtractor={(item) => item.id.toString()}
       />
+
       <View style={{ marginBottom: 30 }}>
         <View style={styles.weightTextView}>
           <Text style={styles.weightText}>Current Weight</Text>
@@ -108,7 +111,15 @@ const GoalInformation = () => {
         raised={true}
         buttonStyle={styles.calculateBtn}
         containerStyle={styles.calculateBtnContainer}
-        onPress={() => console.log("Calculate me")}
+        onPress={() => {
+          navigation.navigate("Macros Result", {
+            goal: goal,
+            activity: activity,
+            goalWeight: goalWeight,
+            currentWeight: currentWeight,
+            gender: gender,
+          });
+        }}
       ></Button>
     </View>
   );

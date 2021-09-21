@@ -6,6 +6,7 @@ import Goal from "../screens/Goal";
 import GoalInformation from "../screens/GoalInformation";
 import ActivityLevel from "../screens/ActivityLevel";
 import Nutrition from "../screens/Nutrition";
+import MacrosResult from "../screens/MacrosResult";
 
 const Stack = createStackNavigator();
 
@@ -56,6 +57,14 @@ const RootNavigation = () => {
           component={GoalInformation}
           options={{
             headerTitle: "Step 3 of 3",
+            headerTitleAlign: "center",
+          }}
+        />
+        <Stack.Screen
+          name="Macros Result"
+          component={MacrosResult}
+          options={{
+            headerTitle: "Result",
             headerTitleAlign: "center",
           }}
         />

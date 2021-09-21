@@ -28,8 +28,8 @@ const goals = [
 ];
 
 const Goal = ({ navigation }) => {
-  const [goalSelected, setGoalSelected] = useState(null);
-  const [goal, setGoal] = useState(null);
+  const [goalSelected, setGoalSelected] = useState(1);
+  const [goal, setGoal] = useState(goals[0]);
 
   const handleGoalPress = (id) => {
     setGoalSelected(id);
@@ -93,7 +93,11 @@ const Goal = ({ navigation }) => {
         raised={true}
         buttonStyle={styles.nextBtn}
         containerStyle={styles.nextBtnContainer}
-        onPress={() => navigation.navigate("Activity Level")}
+        onPress={() =>
+          navigation.navigate("Activity Level", {
+            goal: goal,
+          })
+        }
       ></Button>
     </View>
   );
