@@ -1,25 +1,36 @@
 import "react-native-gesture-handler";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Text, View, Dimensions, StyleSheet } from "react-native";
 import { Card, Button, Icon } from "react-native-elements";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import { ProgressBar } from "react-native-paper";
+import { useNutrition } from "../hooks/useNutrition";
+import { useRecoilState } from "recoil";
+import { dailyCalorieGoalState } from "../atoms/NutritionState";
 
 const width = Dimensions.get("window").width;
 const height = Dimensions.get("window").height / 3;
 
 const Nutrition = ({ navigation }) => {
-  const [calorieGoal, setCalorieGoal] = useState(2000);
-  const [caloriesRemaining, setCaloriesRemaining] = useState(1800);
-  const [calorieProgressBar, setCalorieProgressBar] = useState(
-    (calorieGoal - caloriesRemaining) / calorieGoal
-  );
-  const [proteinGoal, setProteinGoal] = useState(190);
-  const [proteinRemaining, setProteinRemaining] = useState(20);
-  const [proteinProgresBar, setProteinProgressBar] = useState(
-    (proteinGoal - proteinRemaining) / proteinGoal
-  );
+  // useEffect(() => {
+  //   if (proteinGoal != undefined && calorieGoal != undefined) {
+  //     setDailyCalorieGoal(calorieGoal);
+  //     setDailyProteinGoal(proteinGoal);
+  //     setCaloriesRemaining(dailyCalorieGoal - todaysCalories);
+  //     setProteinRemaining(dailyProteinGoal - todaysProtein);
+  //     calorieProgress();
+  //     proteinProgress();
+  //   }
+  // });
+  const nutritionHook = useNutrition();
+
+  const calorieProgress = () =>
+    setCalorieProgressBar(dailyCalorieGoal - caloriesRemaining) /
+    dailyCalorieGoal;
+  const proteinProgress = () =>
+    setProteinProgressBar(dailyProteinGoal - proteinRemaining) /
+    dailyProteinGoal;
 
   return (
     <View style={styles.cardWrapper}>
@@ -37,20 +48,27 @@ const Nutrition = ({ navigation }) => {
           </View>
         </Card.Title>
         <Card.Divider color={"black"} />
+        <View style={styles.weeklyCalorieView}>
+          <Text>
+            Total Calories Left For The Week: {nutritionHook.weeklyCalories}
+          </Text>
+        </View>
         <View style={styles.calculatorWrapper}>
           <View>
             <View style={styles.calorieView}>
               <Ionicons name={"flame"} size={20} color={"black"} />
               <Text style={{ marginLeft: 5 }}>Daily Calorie goal</Text>
             </View>
-            <Text style={{ marginBottom: 5 }}>{calorieGoal}</Text>
+            <Text style={{ marginBottom: 5 }}>
+              {nutritionHook.dailyCalorieGoal}
+            </Text>
             <ProgressBar
-              progress={calorieProgressBar}
+              progress={nutritionHook.calorieProgressBar}
               color={"black"}
               style={styles.progressBar}
             />
             <Text style={{ color: "rgba(0, 0, 0, .5)" }}>
-              {caloriesRemaining} remaining
+              {nutritionHook.caloriesRemaining} remaining
             </Text>
             <Button
               raised={true}
@@ -68,14 +86,16 @@ const Nutrition = ({ navigation }) => {
               />
               <Text style={{ marginLeft: 5 }}>Daily Protein Goal</Text>
             </View>
-            <Text style={{ marginBottom: 5 }}>{proteinGoal}g</Text>
+            <Text style={{ marginBottom: 5 }}>
+              {nutritionHook.dailyProteinGoal}g
+            </Text>
             <ProgressBar
-              progress={proteinProgresBar}
+              progress={nutritionHook.proteinProgressBar}
               color={"black"}
               style={styles.progressBar}
             />
             <Text style={{ color: "rgba(0, 0, 0, .5)" }}>
-              {proteinRemaining}g remaining
+              {nutritionHook.proteinRemaining}g remaining
             </Text>
             <Button
               raised={true}
@@ -96,7 +116,7 @@ const styles = StyleSheet.create({
     padding: 5,
   },
   cardContainer: {
-    height: height,
+    minHeight: height,
     borderRadius: 5,
     elevation: 3,
   },
@@ -144,6 +164,10 @@ const styles = StyleSheet.create({
   calculateBtn: {
     height: 35,
     backgroundColor: "#008800",
+  },
+  weeklyCalorieView: {
+    marginBottom: 10,
+    alignItems: "center",
   },
 });
 

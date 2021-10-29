@@ -1,52 +1,29 @@
 import "react-native-gesture-handler";
 import React, { useState } from "react";
+import {
+  RecoilRoot,
+  atom,
+  selector,
+  useRecoilState,
+  useRecoilValue,
+} from "recoil";
 import { StyleSheet } from "react-native";
 import Navigation from "./navigation";
 import "react-native-gesture-handler";
 import { SafeAreaView } from "react-native";
 import { StatusBar } from "react-native";
 import Amplify from "aws-amplify";
+import MyAmplifyTheme from "./theme/MyAmplifyTheme";
 import config from "./src/aws-exports";
 import { withAuthenticator, AmplifyTheme } from "aws-amplify-react-native";
+import { LogBox } from "react-native";
+
+LogBox.ignoreLogs(["Setting a timer"]);
 Amplify.configure({
   ...config,
   Analytics: {
     disabled: true,
   },
-});
-
-const GREEN = "#008800";
-const DISABLED_GREEN = "#00880080";
-
-const ButtonColor = Object.assign({}, AmplifyTheme.button, {
-  backgroundColor: GREEN,
-});
-const DisabledButtonColor = Object.assign({}, AmplifyTheme.buttonDisabled, {
-  backgroundColor: DISABLED_GREEN,
-});
-const SectionFooterLinkColor = Object.assign(
-  {},
-  AmplifyTheme.sectionFooterLink,
-  {
-    color: GREEN,
-  }
-);
-const SectionFooterLinkColorDisabled = Object.assign(
-  {},
-  AmplifyTheme.sectionFooterLinkDisabled,
-  {
-    color: DISABLED_GREEN,
-  }
-);
-const Container = Object.assign({}, AmplifyTheme.container, {
-  justifyContent: "center",
-});
-const MyTheme = Object.assign({}, AmplifyTheme, {
-  button: ButtonColor,
-  buttonDisabled: DisabledButtonColor,
-  sectionFooterLink: SectionFooterLinkColor,
-  SectionFooterLinkColorDisabled: SectionFooterLinkColorDisabled,
-  container: Container,
 });
 
 const signUpConfig = {
@@ -84,12 +61,12 @@ const signUpConfig = {
 
 const App = () => {
   return (
-    <>
+    <RecoilRoot>
       <StatusBar barStyle="light-content" />
       <SafeAreaView style={styles.container}>
         <Navigation />
       </SafeAreaView>
-    </>
+    </RecoilRoot>
   );
 };
 
@@ -100,4 +77,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withAuthenticator(App, { signUpConfig, theme: MyTheme });
+export default withAuthenticator(App, { signUpConfig, theme: MyAmplifyTheme });
