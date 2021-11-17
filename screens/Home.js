@@ -1,14 +1,14 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { addDays } from "date-fns";
 import { StyleSheet, View } from "react-native";
 import TaskList from "../components/TaskList";
 import { FlatList, Dimensions } from "react-native";
 import TaskNavigator from "../components/TaskNavigator";
-import { ScrollView } from "react-native";
 
 const width = Dimensions.get("window").width;
 
 const Home = () => {
+  const flatListRef = useRef();
   const [fitDevDays, setFitDevDays] = useState([
     {
       id: 1,
@@ -119,82 +119,112 @@ const Home = () => {
       ],
     },
   ]);
+  const getTodaysFitDevDayIndex = () => {
+    let indexToReturn = 0;
+    if (fitDevDays !== null) {
+      let todaysDate = new Date();
+      indexToReturn = fitDevDays.findIndex(
+        (day) => day.date.getDay() === todaysDate.getDay()
+      );
+      if (indexToReturn === -1) {
+        indexToReturn = 0;
+      }
+    }
+    return indexToReturn;
+  };
+  const [currentIndex, setCurrentIndex] = useState(getTodaysFitDevDayIndex());
+  const onRightArrowClick = () => {
+    console.log("right arrow clicked");
+    console.log("current index :", currentIndex);
+    let index = currentIndex;
+    console.log("temp index :", index);
+    if (index < fitDevDays.length - 1) {
+      setCurrentIndex(index + 1);
+    }
+    console.log("new index :", currentIndex);
+    flatListRef.current.scrollToIndex({
+      animated: true,
+      index: currentIndex,
+    });
 
-  // const onRightArrowClick = () => {
-  //   setCurrentIndex(currentIndex + 1);
-  //   console.warn(currentIndex);
-  //   setCurrentDay(fitDevDays[currentIndex]);
-  //   setCurrentDayTasks(fitDevDays[currentIndex].tasks);
-  //   if (currentIndex === fitDevDays.length - 1) {
-  //     const fitDevDay = {
-  //       id: Math.floor(Math.random() * 10000) + 1,
-  //       date: addDays(currentDay.date, 1),
-  //       dayComplete: false,
-  //       tasks: [
-  //         {
-  //           id: Math.floor(Math.random() * 10000) + 1,
-  //           text: "Create twitter content",
-  //           complete: true,
-  //         },
-  //         {
-  //           id: Math.floor(Math.random() * 10000) + 1,
-  //           text: "Work on FitDevDay Switcher",
-  //           complete: true,
-  //         },
-  //         {
-  //           id: Math.floor(Math.random() * 10000) + 1,
-  //           text: "Mobility work",
-  //           complete: true,
-  //         },
-  //         {
-  //           id: Math.floor(Math.random() * 10000) + 1,
-  //           text: "Read 10 pages",
-  //           complete: false,
-  //         },
-  //         {
-  //           id: Math.floor(Math.random() * 10000) + 1,
-  //           text: "Drink 2 big glasses of water",
-  //           complete: true,
-  //         },
-  //       ],
-  //     };
-  //     setFitDevDays([...fitDevDays, fitDevDay]);
-  //   }
-  // };
+    // if (currentIndex === fitDevDays.length - 1) {
+    //   const fitDevDay = {
+    //     id: Math.floor(Math.random() * 10000) + 1,
+    //     date: addDays(currentDay.date, 1),
+    //     dayComplete: false,
+    //     tasks: [
+    //       {
+    //         id: Math.floor(Math.random() * 10000) + 1,
+    //         text: "Create twitter content",
+    //         complete: true,
+    //       },
+    //       {
+    //         id: Math.floor(Math.random() * 10000) + 1,
+    //         text: "Work on FitDevDay Switcher",
+    //         complete: true,
+    //       },
+    //       {
+    //         id: Math.floor(Math.random() * 10000) + 1,
+    //         text: "Mobility work",
+    //         complete: true,
+    //       },
+    //       {
+    //         id: Math.floor(Math.random() * 10000) + 1,
+    //         text: "Read 10 pages",
+    //         complete: false,
+    //       },
+    //       {
+    //         id: Math.floor(Math.random() * 10000) + 1,
+    //         text: "Drink 2 big glasses of water",
+    //         complete: true,
+    //       },
+    //     ],
+    //   };
+    //   setFitDevDays([...fitDevDays, fitDevDay]);
+    // }
+  };
 
-  // const onLeftArrowClick = () => {
-  //   setCurrentIndex(currentIndex - 1);
-  //   console.warn(currentIndex);
-  //   setCurrentDay(fitDevDays[currentIndex]);
-  //   setCurrentDayTasks(fitDevDays[currentIndex].tasks);
-  // };
+  const onLeftArrowClick = () => {
+    console.log("left arrow clicked");
+    console.log("current index :", currentIndex);
+    let index = currentIndex;
+    console.log("temp index :", index);
+    if (index > 0) {
+      setCurrentIndex(index - 1);
+    }
+    console.log("new index :", currentIndex);
+    flatListRef.current.scrollToIndex({
+      animated: true,
+      index: currentIndex,
+    });
+  };
 
   return (
-    <ScrollView>
-      <View style={styles.homeView}>
-        <FlatList
-          data={fitDevDays}
-          pagingEnabled
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => {
-            return (
-              <View style={styles.taskListWrapper}>
-                <View style={styles.dateView}>
-                  <TaskNavigator
-                    // onLeftArrowClick={onLeftArrowClick}
-                    // onRightArrowClick={onRightArrowClick}
-                    currentDay={item}
-                  />
-                </View>
-                <TaskList currentDayTasks={item.tasks} />
+    <View style={styles.homeView}>
+      <FlatList
+        data={fitDevDays}
+        ref={flatListRef}
+        initialScrollIndex={getTodaysFitDevDayIndex()}
+        pagingEnabled
+        horizontal
+        showsHorizontalScrollIndicator={false}
+        renderItem={({ item }) => {
+          return (
+            <View style={styles.taskListWrapper}>
+              <View style={styles.dateView}>
+                <TaskNavigator
+                  onLeftArrowClick={onLeftArrowClick}
+                  onRightArrowClick={onRightArrowClick}
+                  currentDay={item}
+                />
               </View>
-            );
-          }}
-          keyExtractor={(_, index) => index.toString()}
-        />
-      </View>
-    </ScrollView>
+              <TaskList currentDayTasks={item.tasks} />
+            </View>
+          );
+        }}
+        keyExtractor={(_, index) => index.toString()}
+      />
+    </View>
   );
 };
 

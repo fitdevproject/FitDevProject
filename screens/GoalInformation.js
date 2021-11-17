@@ -22,8 +22,8 @@ const genders = [
 ];
 
 const GoalInformation = ({ route, navigation }) => {
-  const [goalWeight, setGoalWeight] = useState(0);
-  const [currentWeight, setCurrentWeight] = useState(0);
+  const [goalWeight, setGoalWeight] = useState(200);
+  const [currentWeight, setCurrentWeight] = useState(200);
   const [gender, setGender] = useState(genders[0]);
   const [genderSelected, setGenderSelected] = useState(1);
   const { goal, activity } = route.params;

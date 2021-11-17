@@ -79,6 +79,7 @@ const Task = ({
               {(formikProps) => (
                 <View style={styles.formikViewWrapper}>
                   <TextInput
+                    keyboardType="default"
                     ref={inputRef}
                     style={styles.input}
                     onChangeText={formikProps.handleChange("text")}
