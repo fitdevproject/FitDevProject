@@ -14,7 +14,7 @@ const TaskNavigator = ({ currentDay, onLeftArrowClick, onRightArrowClick }) => {
       />
 
       <Text style={styles.dateInfo}>
-        {format(currentDay.date, "cccc LLLL d, yyyy")}
+        {currentDay.date ? format(currentDay.date, "cccc LLLL d, yyyy") : ""}
       </Text>
       <Icon
         iconStyle={styles.editIcon}

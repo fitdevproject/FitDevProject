@@ -2,11 +2,14 @@ import React from "react";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Home from "../screens/Home";
 import MaterialIcons from "react-native-vector-icons/MaterialIcons";
+import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 import Ionicons from "react-native-vector-icons/Ionicons";
 import Nutrition from "../screens/Nutrition";
 import Profile from "../screens/Profile";
+import Weight from "../screens/Weight";
 
 const Tab = createBottomTabNavigator();
+const ICON_SIZE = 25;
 
 const HomeBottomTabNavigator = () => {
   return (
@@ -32,7 +35,7 @@ const HomeBottomTabNavigator = () => {
         options={{
           title: "Critical Tasks",
           tabBarIcon: ({ color }) => (
-            <MaterialIcons name={"assignment"} size={30} color={color} />
+            <MaterialIcons name={"assignment"} size={ICON_SIZE} color={color} />
           ),
         }}
       />
@@ -41,7 +44,20 @@ const HomeBottomTabNavigator = () => {
         component={Nutrition}
         options={{
           tabBarIcon: ({ color }) => (
-            <Ionicons name={"nutrition"} size={30} color={color} />
+            <Ionicons name={"nutrition"} size={ICON_SIZE} color={color} />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name={"Weight"}
+        component={Weight}
+        options={{
+          tabBarIcon: ({ color }) => (
+            <MaterialCommunityIcons
+              name={"scale-bathroom"}
+              size={ICON_SIZE}
+              color={color}
+            />
           ),
         }}
       />
@@ -50,7 +66,7 @@ const HomeBottomTabNavigator = () => {
         component={Profile}
         options={{
           tabBarIcon: ({ color }) => (
-            <Ionicons name={"person"} size={30} color={color} />
+            <Ionicons name={"person"} size={ICON_SIZE} color={color} />
           ),
         }}
       />
